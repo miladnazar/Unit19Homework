@@ -5,7 +5,7 @@ import web3
 from web3 import Web3
 from dotenv import load_dotenv
 from web3.middleware import geth_poa_middleware
-#from eth_account import Account
+from eth_account import Account
 
 import os
 import constant
@@ -50,7 +50,7 @@ def priv_key_to_account(privkey, coin):
         return bit.PrivateKeyTestnet(privkey)
     
     elif coin == constant.ETH:
-        return web3.eth.accounts.privateKeyToAccount(privkey)
+        return Account.from_key(privkey)
 
 def create_tx(account, recipient, amount):
     gasEstimate = w3.eth.estimateGas(
@@ -72,8 +72,12 @@ def send_tx(account, recipient, amount):
     return result.hex()
 
 
+
 if __name__ == "__main__":
     coins = derive_wallets(mnemonic)
-    print(coins)
-    print(coins['eth'][0]['privkey'])
+    #print(coins)
+    #print(coins['eth'][0]['0xbfa2645CDCA00D5915c8cCCd9696E95934d74971'])
 
+    account=priv_key_to_account('4e3882d3b8bec7039754774c9bb025d8cf3621942cd8da2d22e723934b968e64', 'eth')
+    create_tx(account, '0x2b272FB533C3447a58b21402b05Bca88a1fa6CB0', 1)
+    send_tx(account, '0x2b272FB533C3447a58b21402b05Bca88a1fa6CB0', 1)
