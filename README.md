@@ -16,7 +16,8 @@ I'm using my Python skills to generate a HD Wallet that includes btc, eth and bi
 ### Send some transactions!
 #### Bitcoin Testnet transaction
 Here is the copy of sending btc-test transactions for 0.00008. Whenever I run my python made file I can change the transaction amount and send it. 
-![alt text](btc-testnet.png)
+
+![alt text](Images/btc-testnet.png)
 
 #### Local PoA Ethereum transaction
 
