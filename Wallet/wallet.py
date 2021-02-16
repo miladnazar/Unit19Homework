@@ -17,11 +17,12 @@ w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
 private_key = os.getenv("PRIVATE_KEY")
 
+#accounts = Account.from_key(os.getenv("0xe631cb477215f7510c5f5dc8bc0b32ee9c8b1c43dd34b44607b6037d388c93d3"))
 mnemonic = os.getenv("MNEMONIC", "donor episode angle divide modify vendor crunch argue vacuum poverty nature balance")
 
 def derive_wallets(mnemonic):
     output_json = dict()
-    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Wallet/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=eth", "--numderive=3"]
+    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Starter-Code/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=eth", "--numderive=3"]
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     p_status = p.wait()
@@ -29,7 +30,7 @@ def derive_wallets(mnemonic):
 
     output_json['eth'] = command_out
 
-    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Wallet/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=btc", "--numderive=3"]
+    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Starter-Code/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=btc", "--numderive=3"]
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     p_status = p.wait()
@@ -37,7 +38,7 @@ def derive_wallets(mnemonic):
 
     output_json['btc'] = command_out
 
-    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Wallet/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=btc-test", "--numderive=3"]
+    command = ["/Users/miladnazar/Desktop/Homework/Unit19Homework/Unit19Homework/Starter-Code/hd-wallet-derive/hd-wallet-derive.php", "-g", "--mnemonic='"+mnemonic+"'", "--cols=path,address,privkey,pubkey", "--format=json", "--coin=btc-test", "--numderive=3"]
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     p_status = p.wait()
@@ -53,13 +54,12 @@ def priv_key_to_account(coin, private_key):
         return bit.PrivateKeyTestnet(private_key)
     
     elif coin == constant.ETH:
-        return Account.privateKeyToAccount(private_key)
-        #Account.from_key(private_key)
+        return Account.from_key(private_key)
 
 def create_tx(coin, account, recipient, amount):
     
-    if coin == constant.BTCTEST: # To Ask I changed the btc to btc-test
-        return account.create_transaction([(str(recipient),amount,'btc-test')])
+    if coin == constant.BTCTEST:
+        return account.create_transaction([(str(recipient),amount,'btc')])
         #gasEstimate = w3.eth.estimateGas({"from": account.address, "to": recipient, "value": amount}
     #)
     return {
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     #print(tmp.to_wif())
 
     account=priv_key_to_account('btc-test', 'cSS7cx4X6QKULydXKZ4C6jhQxZLnF1NVc7WMTMWme94nsVtn3sVh')
-    create_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00001)
+    create_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00008)
 
-    output = send_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00001)
+    output = send_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00008)
     print(output)
