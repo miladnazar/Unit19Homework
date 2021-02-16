@@ -6,12 +6,16 @@ from web3 import Web3
 from dotenv import load_dotenv
 from web3.middleware import geth_poa_middleware
 from eth_account import Account
-
+from bit.network import NetworkAPI
 import os
 import constant
 
-w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
+load_dotenv()
+
+w3 = Web3(Web3.HTTPProvider('HTTP://127.0.0.1:8545'))
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
+private_key = os.getenv("PRIVATE_KEY")
 
 #accounts = Account.from_key(os.getenv("0xe631cb477215f7510c5f5dc8bc0b32ee9c8b1c43dd34b44607b6037d388c93d3"))
 mnemonic = os.getenv("MNEMONIC", "donor episode angle divide modify vendor crunch argue vacuum poverty nature balance")
@@ -45,17 +49,19 @@ def derive_wallets(mnemonic):
     return output_json
 
 
-def priv_key_to_account(privkey, coin):
+def priv_key_to_account(coin, private_key):
     if coin == constant.BTCTEST:
-        return bit.PrivateKeyTestnet(privkey)
+        return bit.PrivateKeyTestnet(private_key)
     
     elif coin == constant.ETH:
-        return Account.from_key(privkey)
+        return Account.from_key(private_key)
 
-def create_tx(account, recipient, amount):
-    gasEstimate = w3.eth.estimateGas(
-        {"from": account.address, "to": recipient, "value": amount}
-    )
+def create_tx(coin, account, recipient, amount):
+    
+    if coin == constant.BTCTEST:
+        return account.create_transaction([(str(recipient),amount,'btc')])
+        #gasEstimate = w3.eth.estimateGas({"from": account.address, "to": recipient, "value": amount}
+    #)
     return {
         "from": account.address,
         "to": recipient,
@@ -64,20 +70,30 @@ def create_tx(account, recipient, amount):
         "gas": gasEstimate,
         "nonce": w3.eth.getTransactionCount(account.address),
     }
-def send_tx(account, recipient, amount):
-    tx = create_tx(account, recipient, amount)
-    signed_tx = account.sign_transaction(tx)
-    result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
-    print(result.hex())
-    return result.hex()
-
-
+def send_tx(coin, account, recipient, amount):
+    if coin == constant.BTCTEST:
+        print("BTC token")
+    elif coin == constant.ETH:
+        tx = create_tx('eth', account, recipient, amount)
+        signed_tx = account.sign_transaction(tx)
+        result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+    elif coin == constant.BTC_TEST:
+        #print("BTC_TEST token")
+        tx_hash=create_tx('btc-test',account,recipient,amount)
+        result=NetworkAPI.broadcast_tx_testnet(tx_hash)
+        return result
 
 if __name__ == "__main__":
     coins = derive_wallets(mnemonic)
     #print(coins)
     #print(coins['eth'][0]['0xbfa2645CDCA00D5915c8cCCd9696E95934d74971'])
+    # This is how you get the BTCtest wallet information (Public and Private Keys)
+    #tmp = bit.PrivateKeyTestnet()
+    #print(tmp.address)
+    #print(tmp.to_wif())
 
-    account=priv_key_to_account('4e3882d3b8bec7039754774c9bb025d8cf3621942cd8da2d22e723934b968e64', 'eth')
-    create_tx(account, '0x2b272FB533C3447a58b21402b05Bca88a1fa6CB0', 1)
-    send_tx(account, '0x2b272FB533C3447a58b21402b05Bca88a1fa6CB0', 1)
+    account=priv_key_to_account('btc-test', 'cSS7cx4X6QKULydXKZ4C6jhQxZLnF1NVc7WMTMWme94nsVtn3sVh')
+    create_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00008)
+
+    output = send_tx('btc-test', account, coins['btc-test'][0]['address'], 0.00008)
+    print(output)
