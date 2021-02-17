@@ -7,7 +7,8 @@ I'm using my Python skills to generate a HD Wallet that includes btc, eth and bi
 
 ### Deriving the wallet keys
 
-**Now I'm able to write my functions to build the multi-coin wallet consisting of btc, eth and bitcoin testnet. I did this mostly in Visual Studio and Terminal and I was able to print out the details of each coin in my wallet. I did create 3 functions seperately for btc-testnet, btc, and eth** *Here is a screenshot for it.*
+**Now I'm able to write my functions to build the multi-coin wallet consisting of btc, eth and bitcoin testnet. I did this mostly in Visual Studio and Terminal and I was able to print out the details of each coin in my wallet. I created 3 functions seperately for btc-testnet, and eth** 
+*Here is a screenshot of my hd wallet which all sorts of info for btc, eth, and btctest.*
 ![alt text](Images/hdwallet.png)  
 
 
@@ -15,7 +16,7 @@ I'm using my Python skills to generate a HD Wallet that includes btc, eth and bi
 
 ### Send some transactions!
 #### Bitcoin Testnet transaction
-Here is the copy of sending btc-test transactions for 0.00008. Whenever I run my python made file I can change the transaction amount and send it. 
+Here is the copy of sending btc-test transactions for 0.00008. According to the balance available. I can rerun my python code and transfer coins to any btc or eth addresses. 
 
 ![alt text](Images/btc-testnet.png)
 
